@@ -6,10 +6,7 @@ Earlier this summer [FiveThirtyEight](https://fivethirtyeight.com/features/why-w
 
 One possibility is to simulate a conversation among the trolls using a word vector space and tf-idf transforms.
 
-1. Build a vector space of all the words in Russian troll tweets corpus. This will enable the use of  gensim's Word2Vec module, specifically the most_similar function which can generate analogies for each word in a given text with a pair of pre-selected words (such as *great* and *sad*). For example, the word *Clinton* would be replaced with the word *Cosby*:```
->>> model.wv.most_similar(positive=[u'great'] + [u'clinton'], negative=[u'sad'], topn=5)
-[(u'cosby', 0.5857975482940674), (u'campaign', 0.5846050381660461), (u'presidential', 0.5707162022590637), (u'senate', 0.5666453838348389), (u'final', 0.5653393268585205)]
-```
+1. Build a vector space of all the words in Russian troll tweets corpus. This will enable the use of  gensim's Word2Vec module, specifically the most_similar function which can generate analogies for each word in a given text with a pair of pre-selected words.
 1. Transform the corpus of tweets as a tf-idf matrix.
 1. Implement the following algorithm until 50,000 words have appeared, beginning with a randomly selected tweet.
   1. Print the tweet.
