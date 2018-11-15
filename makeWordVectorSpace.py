@@ -1,14 +1,7 @@
 #!/usr/bin/env python
 
-import os
-import pickle
-import spacy
-import re
-import csv
-import requests
-import logging
-import gensim
-import shutil
+import os, pickle, spacy, re, csv, requests, logging, gensim, shutil
+from six import iteritems
 
 sourcedir = 'russian-troll-tweets-master'
 # The data were downloaded from
@@ -18,7 +11,7 @@ pickledir = 'Russians_pickled'
 saved = re.sub('pickled$', 'model', pickledir)
 pos_dict = 'pos_dict.pkl'
 
-### BEGIN functions and classes
+### functions and classes
 def getTagged(path):
 	pickleFile = open(path, 'rb')
 	sentences = pickle.load(pickleFile)
@@ -32,7 +25,6 @@ class MySentences(object):
 			if fname.endswith('pkl'):
 				for sent in getTagged(os.path.join(self.dirname, fname)):
 					yield sent
-### END functions and classes
 
 nlp = spacy.load('en')
 
