@@ -89,7 +89,6 @@ def transform_tweet(assertion):
     response = re.sub('\s+', ' ', response)
     response = re.sub(" \'s", "\'s", response)
     response = re.sub(r'# (\w)', r'#\1', response)
-#    response = re.sub(r'(\s[\'\"]) (\w)', r'\1\2', response)
     response = re.sub(r'^([\'\"\xe2])\s+', r'\1', response)
     response = re.sub(r'\s+([\'\"\xe2])$', r'\1', response)
     response = re.sub(r'([\!\?\.])\s+([\!\?\.])', r'\1\2', response)
@@ -98,14 +97,11 @@ def transform_tweet(assertion):
     response = re.sub(r'd ([\"\',\xe2])ve ', r'd\1ve ', response)
     response = re.sub(r'(\w) ([\"\',\xe2])re ', r'\1\2re ', response)
     response = re.sub(r'(\w) ([\"\',\xe2])d ', r'\1\2d ', response)
-#    response = re.sub(r'(\W+)\s+(\W+)', r'\1\2', response)
     response = re.sub(r'(\')\s+([^\']+)\s+(\')', r'\1\2\3', response)
     response = re.sub(r'(\")\s+([^\"]+)\s+(\")', r'\1\2\3', response)
     response = re.sub(r'(\xe2)\s+([^\xe2]+)\s+(\xe2)', r'\1\2\3', response)
+    response = re.sub(r' an ([^aeiou])', r' a \1', response, flags=re.IGNORECASE)
     return response
-
-#def by_stripped_tweet_text(t):
-#    return t[0]
 ### END functions and classes
 corpus = list()
 
@@ -123,14 +119,11 @@ for fname in os.listdir(sourcedir):
                 t = re.sub('pic.twitter\S*', '', t)
                 t = re.sub('\s+$', '', t)
                 t = re.sub('^\s+', '', t)
-#                corpus.append([t, tweet['content']])
                 corpus.append(t)
 
-#corpus.sort(key=by_stripped_tweet_text)
 corpus.sort()
 item = 1
 while item < len(corpus):
-#    if corpus[item][0] == corpus[item-1][0]:
     if corpus[item] == corpus[item-1]:
         corpus.pop(item)
     else:
@@ -144,7 +137,6 @@ vectorizer = TfidfVectorizer(
     token_pattern=r'\b\w+\b',
     min_df=1)
 
-# vectorized_corpus = vectorizer.fit_transform([item[0] for item in corpus])
 vectorized_corpus = vectorizer.fit_transform(corpus)
 
 index = random.randint(0,len(corpus))
@@ -154,12 +146,9 @@ total_words = 0
 while total_words < 50000:
     selected_tweet = corpus.pop(index)
     delete_row_csr(vectorized_corpus, index)
-    # response = transform_tweet(unicode(selected_tweet[0], 'utf-8'))
     response = transform_tweet(unicode(selected_tweet, 'utf-8'))
-    # print(selected_tweet[1])
     print(selected_tweet)
     print(response.encode('utf-8') + '\n')
-    # total_words = total_words + len(selected_tweet[1].split()) + len(response.split())
     total_words = total_words + len(selected_tweet.split()) + len(response.split())
     vectorized_response = vectorizer.transform([response])
     vector_similarity = cosine_similarity(vectorized_response, vectorized_corpus)
