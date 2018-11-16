@@ -1,4 +1,11 @@
 #!/usr/bin/env python
+"""
+Copyright (c) 2018 Mark Wolff <wolff.mark.b@gmail.com>
+
+Copying and distribution of this file, with or without modification, are
+permitted in any medium without royalty provided the copyright notice and
+this notice are preserved. This file is offered as-is, without any warranty.
+"""
 
 import re
 import pickle
@@ -17,8 +24,8 @@ sourcedir = 'russian-troll-tweets-master'
 model_file = 'Russians_model'
 pkl_dict = 'pos_dict.pkl'
 number_of_options = 25
-positive = [u'great']
-negative = [u'sad']
+positive = [u'liberal']
+negative = [u'conservative']
 
 model = gensim.models.Word2Vec.load(model_file)
 pickleFile = open(pkl_dict, 'rb')
@@ -90,7 +97,6 @@ def transform_tweet(assertion):
     response = re.sub('\s+', ' ', response)
     response = re.sub(" \'s", "\'s", response)
     response = re.sub(r'# (\w)', r'#\1', response)
-#    response = re.sub(r'(\s[\'\"]) (\w)', r'\1\2', response)
     response = re.sub(r'^([\'\"\xe2])\s+', r'\1', response)
     response = re.sub(r'\s+([\'\"\xe2])$', r'\1', response)
     response = re.sub(r'([\!\?\.])\s+([\!\?\.])', r'\1\2', response)
@@ -99,15 +105,11 @@ def transform_tweet(assertion):
     response = re.sub(r'd ([\"\',\xe2])ve ', r'd\1ve ', response)
     response = re.sub(r'(\w) ([\"\',\xe2])re ', r'\1\2re ', response)
     response = re.sub(r'(\w) ([\"\',\xe2])d ', r'\1\2d ', response)
-#    response = re.sub(r'(\W+)\s+(\W+)', r'\1\2', response)
     response = re.sub(r'(\')\s+([^\']+)\s+(\')', r'\1\2\3', response)
     response = re.sub(r'(\")\s+([^\"]+)\s+(\")', r'\1\2\3', response)
     response = re.sub(r'(\xe2)\s+([^\xe2]+)\s+(\xe2)', r'\1\2\3', response)
     return response
 
-#def by_stripped_tweet_text(t):
-#    return t[0]
-### END functions and classes
 corpus = list()
 
 for fname in os.listdir(sourcedir):
@@ -124,28 +126,26 @@ for fname in os.listdir(sourcedir):
                 t = re.sub('pic.twitter\S*', '', t)
                 t = re.sub('\s+$', '', t)
                 t = re.sub('^\s+', '', t)
-#                corpus.append([t, tweet['content']])
                 corpus.append(t)
 
-#corpus.sort(key=by_stripped_tweet_text)
 corpus.sort()
 item = 1
 while item < len(corpus):
-#    if corpus[item][0] == corpus[item-1][0]:
     if corpus[item] == corpus[item-1]:
         corpus.pop(item)
     else:
         item = item + 1
 
-print('Positive: ' + positive[0].encode('utf-8'))
-print('Negative: ' + negative[0].encode('utf-8'))
-print('Number of tweets: ' + str(len(corpus)))
+print('TROLL TALK\n')
+print('A contribution to NaNoGenMo 2018 by Mark Wolff <wolff.mark.b@gmail.com>\n\n')
+print('Positive term for word vector space analogy: ' + positive[0].encode('utf-8'))
+print('Negative term for word vector space analogy: ' + negative[0].encode('utf-8'))
+print('Number of tweets used: ' + str(len(corpus)))
 vectorizer = TfidfVectorizer(
     ngram_range=(1, 2),
     token_pattern=r'\b\w+\b',
     min_df=1)
 
-# vectorized_corpus = vectorizer.fit_transform([item[0] for item in corpus])
 vectorized_corpus = vectorizer.fit_transform(corpus)
 
 index = random.randint(0,len(corpus))
@@ -154,13 +154,10 @@ print('Initial tweet index: ' + str(index) + '\n')
 total_words = 0
 while total_words < 50000:
     selected_tweet = corpus.pop(index)
-    delete_row_csr(vectorized_corpus, index)
-    # response = transform_tweet(unicode(selected_tweet[0], 'utf-8'))
-    response = transform_tweet(unicode(selected_tweet, 'utf-8'))
-    # print(selected_tweet[1])
     print(selected_tweet)
+    delete_row_csr(vectorized_corpus, index)
+    response = transform_tweet(unicode(selected_tweet, 'utf-8'))
     print(response.encode('utf-8') + '\n')
-    # total_words = total_words + len(selected_tweet[1].split()) + len(response.split())
     total_words = total_words + len(selected_tweet.split()) + len(response.split())
     vectorized_response = vectorizer.transform([response])
     vector_similarity = cosine_similarity(vectorized_response, vectorized_corpus)
