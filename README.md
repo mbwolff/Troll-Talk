@@ -2,7 +2,7 @@
 
 ## A contribution to [NaNoGenMo 2018](https://github.com/NaNoGenMo/2018)
 
-Earlier this summer [FiveThirtyEight](https://fivethirtyeight.com/features/why-were-sharing-3-million-russian-troll-tweets/) shared [nearly three million tweets](https://github.com/fivethirtyeight/russian-troll-tweets/) associated with accounts linked to Russia's Internet Research Agency. The evidence suggests these tweets were part of a campaign to influence the 2016 US election. What was communicated, and how do we make sense of it?
+Earlier this summer [FiveThirtyEight](https://fivethirtyeight.com/features/why-were-sharing-3-million-russian-troll-tweets/) shared a corpus of [nearly three million tweets](https://github.com/fivethirtyeight/russian-troll-tweets/) associated with accounts linked to Russia's Internet Research Agency. The evidence suggests these tweets were part of a campaign to influence the 2016 US election. What was communicated, and how do we make sense of it?
 
 One possibility is to simulate a conversation among the trolls using a word embedding model and tf-idf transforms.
 
